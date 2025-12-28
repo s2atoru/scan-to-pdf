@@ -1,0 +1,18 @@
+[project]
+name = "scan-to-pdf"
+version = "0.1.0"
+description = "CLI to combine images into a searchable PDF with OCR"
+authors = [{ name = "Your Name", email = "you@example.com" }]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "pytesseract>=0.3.10",
+    "pypdf>=5.0.0",
+    "pillow>=11.0.0",
+]
+
+[project.scripts]
+scan-to-pdf = "scan_to_pdf.main:run_cli"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
