@@ -1,7 +1,7 @@
 # scan-to-pdf
 
-Python 3.12 CLI that sorts images by creation time, converts them to a
-single searchable PDF, and runs OCR (Japanese + English by default).
+Python 3.12 CLI that sorts images and PDFs by creation time, converts them to a
+single searchable PDF, and runs OCR (Japanese + English by default) on images.
 
 ## Prerequisites
 - Python 3.12
@@ -60,13 +60,14 @@ uv run scan-to-pdf /full/path/to/folder --output /full/path/to/output.pdf \
 ```
 
 ### Options
-- `folder`: Full path to a folder containing images (required)
+- `folder`: Full path to a folder containing images and/or PDFs (required)
 - `--output`: Output PDF path (optional; defaults to `<folder>/output.pdf`)
-- `--lang`: Tesseract language codes (optional; defaults to `jpn+eng`)
+- `--lang`: Tesseract language codes for OCR on images (optional; defaults to `jpn+eng`)
   - Examples: `jpn`, `eng`, `jpn+eng`, `fra`, `deu`, etc.
   - Use `+` to combine multiple languages
 
-### Supported Image Formats
+### Supported File Formats
+#### Images (OCR will be applied)
 - PNG (`.png`)
 - JPEG (`.jpg`, `.jpeg`)
 - TIFF (`.tif`, `.tiff`)
@@ -74,9 +75,12 @@ uv run scan-to-pdf /full/path/to/folder --output /full/path/to/output.pdf \
 - GIF (`.gif`)
 - WebP (`.webp`)
 
+#### PDF (pages will be merged as-is)
+- PDF (`.pdf`)
+
 ## Notes
-- Images are sorted by creation time when available, otherwise modification
-  time.
-- Each page is OCRed and embedded so the PDF is searchable.
+- Files are sorted by creation time when available, otherwise modification time.
+- Images are OCRed and embedded so the resulting PDF is searchable.
+- Existing PDF files are merged as-is without OCR processing.
 - For math-heavy documents, ensure the Tesseract math model is installed if
   available on your system.
