@@ -13,8 +13,12 @@ single searchable PDF, and runs OCR (Japanese + English by default) on images.
 
 ### Python Dependencies
 - `pytesseract`: Python wrapper for Tesseract OCR
-- `pypdf`: PDF manipulation library
+- `pypdf`: PDF manipulation library for reading/writing PDFs
 - `pillow`: Image processing library
+
+### Development Dependencies (optional)
+- `ruff`: Linter and code formatter
+- `mypy`: Static type checker
 
 ## Setup
 ```bash
@@ -75,12 +79,16 @@ uv run scan-to-pdf /full/path/to/folder --output /full/path/to/output.pdf \
 - GIF (`.gif`)
 - WebP (`.webp`)
 
-#### PDF (pages will be merged as-is)
+#### PDF (automatic text layer detection)
 - PDF (`.pdf`)
+  - PDFs with text layer: Merged as-is (no OCR needed)
+  - PDFs without text layer: Merged with warning (OCR would require pdf2image)
 
 ## Notes
 - Files are sorted by creation time when available, otherwise modification time.
 - Images are OCRed and embedded so the resulting PDF is searchable.
-- Existing PDF files are merged as-is without OCR processing.
+- PDFs are automatically checked for text layer:
+  - With text layer (>10% pages): Merged directly, preserving searchability
+  - Without text layer: Merged with a warning (OCR on PDF pages requires additional libraries)
 - For math-heavy documents, ensure the Tesseract math model is installed if
   available on your system.
