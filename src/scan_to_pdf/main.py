@@ -8,6 +8,7 @@ from pathlib import Path
 import pytesseract
 from PIL import Image, ImageOps
 from pypdf import PdfReader, PdfWriter
+from tqdm import tqdm
 
 IMAGE_EXTENSIONS = {
     ".png",
@@ -138,29 +139,33 @@ def assemble_pdf(
         language: Tesseract language codes for OCR on images (e.g., 'jpn+eng').
     """
     writer = PdfWriter()
+    file_list = list(file_paths)
 
-    for path in file_paths:
-        if path.suffix.lower() == PDF_EXTENSION:
-            # Check if PDF needs OCR
-            if has_text_layer(path):
-                # Add existing PDF pages directly (already has text layer)
-                reader = PdfReader(path)
+    with tqdm(total=len(file_list), desc="Converting to PDF", unit="file") as pbar:
+        for path in file_list:
+            if path.suffix.lower() == PDF_EXTENSION:
+                # Check if PDF needs OCR
+                if has_text_layer(path):
+                    # Add existing PDF pages directly (already has text layer)
+                    reader = PdfReader(path)
+                    for page in reader.pages:
+                        writer.add_page(page)
+                else:
+                    # PDF has no text layer - add with warning
+                    print(
+                        f"Warning: {path.name} has no text layer. Adding as-is "
+                        "without OCR."
+                    )
+                    reader = PdfReader(path)
+                    for page in reader.pages:
+                        writer.add_page(page)
+            elif path.suffix.lower() in IMAGE_EXTENSIONS:
+                # Convert image to searchable PDF
+                pdf_bytes = image_to_pdf_bytes(path, language)
+                reader = PdfReader(io.BytesIO(pdf_bytes))
                 for page in reader.pages:
                     writer.add_page(page)
-            else:
-                # PDF has no text layer - add with warning
-                print(
-                    f"Warning: {path.name} has no text layer. Adding as-is without OCR."
-                )
-                reader = PdfReader(path)
-                for page in reader.pages:
-                    writer.add_page(page)
-        elif path.suffix.lower() in IMAGE_EXTENSIONS:
-            # Convert image to searchable PDF
-            pdf_bytes = image_to_pdf_bytes(path, language)
-            reader = PdfReader(io.BytesIO(pdf_bytes))
-            for page in reader.pages:
-                writer.add_page(page)
+            pbar.update(1)
 
     output_pdf.parent.mkdir(parents=True, exist_ok=True)
     with output_pdf.open("wb") as pdf_file:

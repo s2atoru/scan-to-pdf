@@ -15,10 +15,12 @@ single searchable PDF, and runs OCR (Japanese + English by default) on images.
 - `pytesseract`: Python wrapper for Tesseract OCR
 - `pypdf`: PDF manipulation library for reading/writing PDFs
 - `pillow`: Image processing library
+- `tqdm`: Progress bar library for displaying conversion progress
 
 ### Development Dependencies (optional)
 - `ruff`: Linter and code formatter
 - `mypy`: Static type checker
+- `pytest`: Testing framework
 
 ## Setup
 ```bash
@@ -60,7 +62,19 @@ uv pip uninstall scan-to-pdf
 For development or one-time use without installation:
 ```bash
 uv run scan-to-pdf /full/path/to/folder --output /full/path/to/output.pdf \
-  --lang jpn+eng
+  -
+
+## Testing
+Run the test suite:
+```bash
+uv run pytest -v
+```
+
+Run tests with coverage (install `pytest-cov` first):
+```bash
+uv add --group dev pytest-cov
+uv run pytest --cov=src/scan_to_pdf -v
+```-lang jpn+eng
 ```
 
 ### Options
