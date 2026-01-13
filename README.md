@@ -62,7 +62,8 @@ uv pip uninstall scan-to-pdf
 For development or one-time use without installation:
 ```bash
 uv run scan-to-pdf /full/path/to/folder --output /full/path/to/output.pdf \
-  -
+  --lang jpn+eng
+```
 
 ## Testing
 Run the test suite:
@@ -74,7 +75,6 @@ Run tests with coverage (install `pytest-cov` first):
 ```bash
 uv add --group dev pytest-cov
 uv run pytest --cov=src/scan_to_pdf -v
-```-lang jpn+eng
 ```
 
 ### Options
